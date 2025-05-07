@@ -2,9 +2,10 @@
 BIN = demo
 
 # Flags
-CFLAGS += -std=c89 -Wall -Wextra -pedantic -O2 -DSDL_DISABLE_IMMINTRIN_H
+CFLAGS += -std=c99 -Wall -Wextra -pedantic -O2 -DSDL_DISABLE_IMMINTRIN_H
 CFLAGS += `sdl2-config --cflags`
 
+#SRC = main_testing.c
 SRC = main.c
 OBJ = $(SRC:.c=.o)
 

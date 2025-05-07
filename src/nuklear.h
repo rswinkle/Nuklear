@@ -4351,6 +4351,7 @@ struct nk_text_edit {
     int cursor;
     int select_start;
     int select_end;
+    nk_bool is_first_focus;
     unsigned char mode;
     unsigned char cursor_at_end_of_line;
     unsigned char initialized;
@@ -5517,6 +5518,7 @@ struct nk_edit_state {
     int cursor;
     int sel_start;
     int sel_end;
+    nk_bool is_first_focus;
     struct nk_scroll scrollbar;
     unsigned char mode;
     unsigned char single_line;

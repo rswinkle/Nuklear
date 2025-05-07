@@ -194,7 +194,7 @@ nk_do_edit(nk_flags *state, struct nk_command_buffer *out,
     }
 
     /* (de)activate text editor */
-    if (!prev_state && edit->active) {
+    if ((!prev_state || edit->is_first_focus) && edit->active) {
         const enum nk_text_edit_type type = (flags & NK_EDIT_MULTILINE) ?
             NK_TEXT_EDIT_MULTI_LINE: NK_TEXT_EDIT_SINGLE_LINE;
         /* keep scroll position when re-activating edit widget */
@@ -687,6 +687,7 @@ nk_edit_focus(struct nk_context *ctx, nk_flags flags)
 
     win = ctx->current;
     hash = win->edit.seq;
+    win->edit.is_first_focus = !win->edit.active;
     win->edit.active = nk_true;
     win->edit.name = hash;
     if (flags & NK_EDIT_ALWAYS_INSERT_MODE)

@@ -4574,6 +4574,7 @@ struct nk_text_edit {
     int cursor;
     int select_start;
     int select_end;
+    nk_bool is_first_focus;
     unsigned char mode;
     unsigned char cursor_at_end_of_line;
     unsigned char initialized;
@@ -5740,6 +5741,7 @@ struct nk_edit_state {
     int cursor;
     int sel_start;
     int sel_end;
+    nk_bool is_first_focus;
     struct nk_scroll scrollbar;
     unsigned char mode;
     unsigned char single_line;
@@ -27764,6 +27766,7 @@ nk_textedit_clear_state(struct nk_text_edit *state, enum nk_text_edit_type type,
    state->mode = NK_TEXT_EDIT_MODE_VIEW;
    state->filter = filter;
    state->scrollbar = nk_vec2(0,0);
+   state->is_first_focus = nk_false;
 }
 NK_API void
 nk_textedit_init_fixed(struct nk_text_edit *state, void *memory, nk_size size)
@@ -28008,7 +28011,7 @@ nk_do_edit(nk_flags *state, struct nk_command_buffer *out,
     }
 
     /* (de)activate text editor */
-    if (!prev_state && edit->active) {
+    if ((!prev_state || edit->is_first_focus) && edit->active) {
         const enum nk_text_edit_type type = (flags & NK_EDIT_MULTILINE) ?
             NK_TEXT_EDIT_MULTI_LINE: NK_TEXT_EDIT_SINGLE_LINE;
         /* keep scroll position when re-activating edit widget */
@@ -28501,6 +28504,7 @@ nk_edit_focus(struct nk_context *ctx, nk_flags flags)
 
     win = ctx->current;
     hash = win->edit.seq;
+    win->edit.is_first_focus = !win->edit.active;
     win->edit.active = nk_true;
     win->edit.name = hash;
     if (flags & NK_EDIT_ALWAYS_INSERT_MODE)

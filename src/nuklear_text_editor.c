@@ -986,6 +986,7 @@ nk_textedit_clear_state(struct nk_text_edit *state, enum nk_text_edit_type type,
    state->mode = NK_TEXT_EDIT_MODE_VIEW;
    state->filter = filter;
    state->scrollbar = nk_vec2(0,0);
+   state->is_first_focus = nk_false;
 }
 NK_API void
 nk_textedit_init_fixed(struct nk_text_edit *state, void *memory, nk_size size)

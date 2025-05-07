@@ -631,7 +631,7 @@ overview(struct nk_context *ctx)
                 nk_edit_string(ctx, NK_EDIT_FIELD, field_buffer, &field_len, 64, nk_filter_default);
 
                 nk_label(ctx, "Field 2:", NK_TEXT_LEFT);
-                nk_edit_string(ctx, NK_EDIT_SELECTABLE|NK_EDIT_CLIPBOARD, field_w_overwrite_buf, &field_ow_len, 64, nk_filter_default);
+                nk_edit_string(ctx, NK_EDIT_AUTO_SELECT|NK_EDIT_SELECTABLE|NK_EDIT_CLIPBOARD, field_w_overwrite_buf, &field_ow_len, 64, nk_filter_default);
 
                 nk_label(ctx, "Box:", NK_TEXT_LEFT);
                 nk_layout_row_static(ctx, 180, 278, 1);
