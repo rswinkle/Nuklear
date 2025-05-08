@@ -2,11 +2,12 @@
 BIN = demo
 
 # Flags
-CFLAGS += -std=c99 -Wall -Wextra -pedantic -O2 -DSDL_DISABLE_IMMINTRIN_H
+#CFLAGS += -std=gnu99 -Wall -Wextra -pedantic -O2 -DSDL_DISABLE_IMMINTRIN_H
+CFLAGS += -g -std=gnu99 -Wall -Wextra -pedantic -Og -DSDL_DISABLE_IMMINTRIN_H
 CFLAGS += `sdl2-config --cflags`
 
-#SRC = main_testing.c
-SRC = main.c
+SRC = main_testing.c
+#SRC = main.c
 OBJ = $(SRC:.c=.o)
 
 ifeq ($(OS),Windows_NT)

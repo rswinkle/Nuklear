@@ -28559,6 +28559,7 @@ nk_edit_string(struct nk_context *ctx, nk_flags flags,
         edit->scrollbar.x = (float)win->edit.scrollbar.x;
         edit->scrollbar.y = (float)win->edit.scrollbar.y;
         edit->active = nk_true;
+        edit->is_first_focus = win->edit.is_first_focus;
     } else edit->active = nk_false;
 
     max = NK_MAX(1, max);

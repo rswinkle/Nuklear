@@ -37,7 +37,7 @@
 /*#define INCLUDE_STYLE */
 /*#define INCLUDE_CALCULATOR */
 /*#define INCLUDE_CANVAS */
-/* #define INCLUDE_OVERVIEW */
+#define INCLUDE_OVERVIEW
 /*#define INCLUDE_CONFIGURATOR */
 /*#define INCLUDE_NODE_EDITOR */
 
@@ -166,10 +166,16 @@ main(void)
     }
 
     static int rename_flag = 0;
-    static nk_bool selected = 0;
+    static nk_bool selected[2];
     static char buf[128] = "Playlist";
     static int buf_len = 8;
-    static int focus_flag;
+
+    static char* first;
+    static char* second;
+
+    first = strdup(buf);
+
+
     int edit_flags = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER | NK_EDIT_AUTO_SELECT | NK_EDIT_ALWAYS_INSERT_MODE;
 
 
@@ -187,34 +193,72 @@ main(void)
         nk_input_end(ctx);
 
         /* GUI */
-        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
+        if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 500),
             NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+            NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE|NK_WINDOW_NO_SCROLLBAR))
         {
             int active = 0;
 
-            if (!rename_flag) {
-                focus_flag = 0;
-            }
-
             nk_layout_row_dynamic(ctx, 30, 1);
 
-            if (rename_flag) {
+            if (rename_flag == 1) {
                 nk_edit_focus(ctx, edit_flags);
                 active = nk_edit_string(ctx, edit_flags, buf, &buf_len, 128, nk_filter_default);
+
                 buf[buf_len] = 0;
                 if (active & NK_EDIT_COMMITED && buf_len) {
                     printf("buf = %s\n", buf);
+                    free(first);
+                    first = strdup(buf);
                     rename_flag = 0;
+                    buf[0] = 0;
+                    buf_len = 0;
                 }
             } else {
-                if (nk_selectable_label(ctx, buf, NK_TEXT_CENTERED, &selected)) {
-                    if (selected) {
+                if (nk_selectable_label(ctx, first, NK_TEXT_CENTERED, &selected[0])) {
+                    if (selected[0]) {
                     } else {
+                        strcpy(buf, first);
+                        buf_len = strlen(buf);
                         rename_flag = 1;
                     }
                 }
             }
+
+            if (rename_flag == 2) {
+                nk_edit_focus(ctx, edit_flags);
+                active = nk_edit_string(ctx, edit_flags, buf, &buf_len, 128, nk_filter_default);
+
+                buf[buf_len] = 0;
+                if (active & NK_EDIT_COMMITED && buf_len) {
+                    printf("second buf = %s\n", buf);
+                    free(second);
+                    second = strdup(buf);
+                    rename_flag = 0;
+                    buf[0] = 0;
+                    buf_len = 0;
+                }
+            } else if (second) {
+                if (nk_selectable_label(ctx, second, NK_TEXT_CENTERED, &selected[1])) {
+                    if (selected[1]) {
+                    } else {
+                    }
+                }
+            }
+
+            nk_label(ctx, "just some filler", NK_TEXT_CENTERED);
+            nk_label(ctx, "more filler", NK_TEXT_CENTERED);
+
+            nk_layout_row_dynamic(ctx, 60, 1);
+            //nk_rule_horizontal(ctx, nk_default_color_style[NK_COLOR_WINDOW], nk_false);
+            nk_rule_horizontal(ctx, nk_default_color_style[NK_COLOR_TEXT], nk_false);
+
+            if (nk_button_label(ctx, "Add")) {
+                rename_flag = 2;
+                strcpy(buf, "New Playlist");
+                buf_len = 12;
+            }
+
             /*
             enum {EASY, HARD};
             static int op = EASY;
