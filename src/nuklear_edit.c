@@ -192,6 +192,8 @@ nk_do_edit(nk_flags *state, struct nk_command_buffer *out,
         edit->active = NK_INBOX(in->mouse.pos.x, in->mouse.pos.y,
                                 bounds.x, bounds.y, bounds.w, bounds.h);
     }
+    /* edit->active is unsigned char or I'd do |= */
+    edit->active = edit->active || (flags & NK_EDIT_IMMEDIATE_FOCUS);
 
     /* (de)activate text editor */
     if ((!prev_state || edit->is_first_focus) && edit->active) {

@@ -176,7 +176,10 @@ main(void)
     first = strdup(buf);
 
 
-    int edit_flags = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER | NK_EDIT_AUTO_SELECT | NK_EDIT_ALWAYS_INSERT_MODE;
+    // EDIT_FIELD includes always insert
+    //int edit_flags = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER | NK_EDIT_AUTO_SELECT;
+    //int edit_flags = NK_EDIT_SELECTABLE | NK_EDIT_CLIPBOARD | NK_EDIT_SIG_ENTER | NK_EDIT_AUTO_SELECT;
+    int edit_flags = NK_EDIT_FIELD | NK_EDIT_SIG_ENTER | NK_EDIT_AUTO_SELECT | NK_EDIT_IMMEDIATE_FOCUS;
 
 
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
@@ -202,7 +205,7 @@ main(void)
             nk_layout_row_dynamic(ctx, 30, 1);
 
             if (rename_flag == 1) {
-                nk_edit_focus(ctx, edit_flags);
+                //nk_edit_focus(ctx, edit_flags);
                 active = nk_edit_string(ctx, edit_flags, buf, &buf_len, 128, nk_filter_default);
 
                 buf[buf_len] = 0;
@@ -226,7 +229,7 @@ main(void)
             }
 
             if (rename_flag == 2) {
-                nk_edit_focus(ctx, edit_flags);
+                //nk_edit_focus(ctx, edit_flags);
                 active = nk_edit_string(ctx, edit_flags, buf, &buf_len, 128, nk_filter_default);
 
                 buf[buf_len] = 0;
