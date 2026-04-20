@@ -153,7 +153,7 @@ nk_d3d9_render(enum nk_anti_aliasing AA)
         config.arc_segment_count = 22;
         config.tex_null = d3d9.tex_null;
 
-        /* convert shapes into vertexes */
+        /* convert shapes into vertices */
         nk_buffer_init_default(&vbuf);
         nk_buffer_init_default(&ebuf);
         nk_convert(&d3d9.ctx, &d3d9.cmds, &vbuf, &ebuf, &config);
@@ -453,6 +453,30 @@ nk_d3d9_handle_event(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_MBUTTONUP:
         nk_input_button(&d3d9.ctx, NK_BUTTON_MIDDLE, (short)LOWORD(lparam), (short)HIWORD(lparam), 0);
+        ReleaseCapture();
+        return 1;
+
+    case WM_XBUTTONDOWN:
+        switch (GET_XBUTTON_WPARAM(wparam)) {
+        case XBUTTON1:
+            nk_input_button(&d3d9.ctx, NK_BUTTON_X1, (short)LOWORD(lparam), (short)HIWORD(lparam), 1);
+            break;
+        case XBUTTON2:
+            nk_input_button(&d3d9.ctx, NK_BUTTON_X2, (short)LOWORD(lparam), (short)HIWORD(lparam), 1);
+            break;
+        }
+        SetCapture(wnd);
+        return 1;
+
+    case WM_XBUTTONUP:
+        switch (GET_XBUTTON_WPARAM(wparam)) {
+        case XBUTTON1:
+            nk_input_button(&d3d9.ctx, NK_BUTTON_X1, (short)LOWORD(lparam), (short)HIWORD(lparam), 0);
+            break;
+        case XBUTTON2:
+            nk_input_button(&d3d9.ctx, NK_BUTTON_X2, (short)LOWORD(lparam), (short)HIWORD(lparam), 0);
+            break;
+        }
         ReleaseCapture();
         return 1;
 

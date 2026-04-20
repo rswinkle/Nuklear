@@ -154,7 +154,7 @@ nk_glfw3_render(enum nk_anti_aliasing AA)
         config.shape_AA = AA;
         config.line_AA = AA;
 
-        /* convert shapes into vertexes */
+        /* convert shapes into vertices */
         nk_buffer_init_default(&vbuf);
         nk_buffer_init_default(&ebuf);
         nk_convert(&glfw.ctx, &dev->cmds, &vbuf, &ebuf, &config);
@@ -453,6 +453,8 @@ nk_glfw3_new_frame(void)
     nk_input_button(ctx, NK_BUTTON_MIDDLE, (int)x, (int)y, glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS);
     nk_input_button(ctx, NK_BUTTON_RIGHT, (int)x, (int)y, glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
     nk_input_button(ctx, NK_BUTTON_DOUBLE, (int)glfw.double_click_pos.x, (int)glfw.double_click_pos.y, glfw.is_double_click_down);
+    nk_input_button(ctx, NK_BUTTON_X1, (int)x, (int)y, glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_4) == GLFW_PRESS);
+    nk_input_button(ctx, NK_BUTTON_X2, (int)x, (int)y, glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_5) == GLFW_PRESS);
     nk_input_scroll(ctx, glfw.scroll);
     nk_input_end(&glfw.ctx);
 

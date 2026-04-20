@@ -166,7 +166,7 @@ nk_x11_render(enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_b
         config.shape_AA = AA;
         config.line_AA = AA;
 
-        /* convert shapes into vertexes */
+        /* convert shapes into vertices */
         nk_buffer_init_default(&vbuf);
         nk_buffer_init_default(&ebuf);
         nk_convert(&x11.ctx, &dev->cmds, &vbuf, &ebuf, &config);
@@ -334,6 +334,10 @@ nk_x11_handle_event(XEvent *evt)
             nk_input_scroll(ctx, nk_vec2(0,1.0f));
         else if (evt->xbutton.button == Button5)
             nk_input_scroll(ctx, nk_vec2(0,-1.0f));
+        else if (evt->xbutton.button == 8)
+            nk_input_button(ctx, NK_BUTTON_X1, x, y, down);
+        else if (evt->xbutton.button == 9)
+            nk_input_button(ctx, NK_BUTTON_X2, x, y, down);
         else return 0;
         return 1;
     } else if (evt->type == MotionNotify) {

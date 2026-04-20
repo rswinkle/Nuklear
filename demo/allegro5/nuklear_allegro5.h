@@ -355,7 +355,8 @@ nk_allegro5_handle_event(ALLEGRO_EVENT *ev)
             al_acknowledge_resize(ev->display.source);
             return 1;
         } break;
-        case ALLEGRO_EVENT_MOUSE_AXES: {
+        case ALLEGRO_EVENT_MOUSE_AXES:
+        case ALLEGRO_EVENT_MOUSE_WARPED: {
             nk_input_motion(ctx, ev->mouse.x, ev->mouse.y);
             if (ev->mouse.dz != 0) {
                 nk_input_scroll(ctx, nk_vec2(0,(float)ev->mouse.dz / al_get_mouse_wheel_precision()));
@@ -364,12 +365,14 @@ nk_allegro5_handle_event(ALLEGRO_EVENT *ev)
         } break;
         case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
         case ALLEGRO_EVENT_MOUSE_BUTTON_UP: {
-            int button = NK_BUTTON_LEFT;
-            if (ev->mouse.button == 2) {
-                button = NK_BUTTON_RIGHT;
-            }
-            else if (ev->mouse.button == 3) {
-                button = NK_BUTTON_MIDDLE;
+            int button;
+            switch (ev->mouse.button) {
+                case 1: button = NK_BUTTON_LEFT; break;
+                case 2: button = NK_BUTTON_RIGHT; break;
+                case 3: button = NK_BUTTON_MIDDLE; break;
+                case 4: button = NK_BUTTON_X1; break;
+                case 5: button = NK_BUTTON_X2; break;
+                default: return 0;
             }
             nk_input_button(ctx, button, ev->mouse.x, ev->mouse.y, ev->type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN);
             return 1;
