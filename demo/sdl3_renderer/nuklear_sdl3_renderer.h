@@ -44,6 +44,7 @@ NK_API nk_handle            nk_sdl_get_userdata(struct nk_context* ctx);
 NK_API void                 nk_sdl_set_userdata(struct nk_context* ctx, nk_handle userdata);
 NK_API void                 nk_sdl_style_set_debug_font(struct nk_context* ctx);
 NK_API struct nk_allocator  nk_sdl_allocator(void);
+NK_API void                 nk_sdl_scale(struct nk_context* ctx, float scale);
 
 #ifdef __cplusplus
 }
@@ -77,6 +78,7 @@ struct nk_sdl_vertex {
 struct nk_sdl {
     SDL_Window *win;
     SDL_Renderer *renderer;
+    float gui_scale;
     struct nk_user_font* debug_font;
     struct nk_sdl_device ogl;
     struct nk_context ctx;
@@ -526,7 +528,8 @@ nk_sdl_handle_event(struct nk_context* ctx, SDL_Event *evt)
         case SDL_EVENT_MOUSE_BUTTON_UP: /* MOUSEBUTTONUP & MOUSEBUTTONDOWN share same routine */
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
             {
-                const int x = evt->button.x, y = evt->button.y;
+                //const int x = evt->button.x, y = evt->button.y;
+                const int x = evt->button.x/sdl->gui_scale, y = evt->button.y/sdl->gui_scale;
                 const int down = evt->button.down;
                 switch(evt->button.button)
                 {
@@ -546,10 +549,20 @@ nk_sdl_handle_event(struct nk_context* ctx, SDL_Event *evt)
             return 1;
 
         case SDL_EVENT_MOUSE_MOTION:
-            ctx->input.mouse.pos.x = evt->motion.x;
-            ctx->input.mouse.pos.y = evt->motion.y;
-            ctx->input.mouse.delta.x = ctx->input.mouse.pos.x - ctx->input.mouse.prev.x;
-            ctx->input.mouse.delta.y = ctx->input.mouse.pos.y - ctx->input.mouse.prev.y;
+            //if (ctx->input.mouse.grabbed) {
+            //    // previous positions were already scaled
+            //    int x = (int)ctx->input.mouse.prev.x, y = (int)ctx->input.mouse.prev.y;
+            //    nk_input_motion(ctx, x + evt->motion.xrel/gui_scale, y + evt->motion.yrel/gui_scale);
+            //}
+            //else nk_input_motion(ctx, evt->motion.x/gui_scale, evt->motion.y/gui_scale);
+
+            nk_input_motion(ctx, evt->motion.x/sdl->gui_scale, evt->motion.y/sdl->gui_scale);
+
+            // original unscaled inline version
+            //ctx->input.mouse.pos.x = evt->motion.x;
+            //ctx->input.mouse.pos.y = evt->motion.y;
+            //ctx->input.mouse.delta.x = ctx->input.mouse.pos.x - ctx->input.mouse.prev.x;
+            //ctx->input.mouse.delta.y = ctx->input.mouse.pos.y - ctx->input.mouse.prev.y;
             return 1;
 
         case SDL_EVENT_TEXT_INPUT:
@@ -720,6 +733,15 @@ nk_sdl_style_set_debug_font(struct nk_context* ctx)
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroySurface(surface);
+}
+
+NK_API void
+nk_sdl_scale(struct nk_context* ctx, float scale)
+{
+    struct nk_sdl* sdl;
+    NK_ASSERT(ctx);
+    sdl = (struct nk_sdl*)ctx->userdata.ptr;
+    sdl->gui_scale = scale;
 }
 
 #endif /* NK_SDL3_RENDERER_IMPLEMENTATION_ONCE */
